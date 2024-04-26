@@ -43,4 +43,6 @@ const videoSchema = new mongoose.Schema(
 );
 videoSchema.plugin(mongoosePaginate);
 
-export const Video = mongoose.model("Video", videoSchema);
+const Video = mongoose.model("Video", videoSchema);
+
+export default Video;
