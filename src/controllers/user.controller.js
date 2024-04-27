@@ -24,19 +24,26 @@ export const registerUser = asyncHandler(async (req, res) => {
     }
 
     //Check for coverImage:optional and avatar:required
-    const avatarImage = await req.files?.avatar[0]?.path;
+    console.log(req?.files.avatar[0].path);
+    const avatarImage = await req.files?.avatar?.[0]?.path;
     if (!avatarImage) {
         throw new ApiError(400, "Avatar is Required");
     }
-    const coverImage = await req.files?.coverImage[0]?.path;
+    let coverImage;
+    if (
+        req.files &&
+        Array.isArray(req.files.coverImage) &&
+        req.files.coverImage.length > 0
+    ) {
+        coverImage = await req.files?.coverImage[0]?.path;
+    }
 
     //upload to cloudinary , check avatar uploaded
     const uploadedAvatar = await uploadOnCloudinary(avatarImage);
     const uploadedCoverImage = await uploadOnCloudinary(coverImage);
-    console.log(uploadedAvatar.url);
 
     if (!uploadedAvatar) {
-        throw new ApiError(400, "Avatar is Required");
+        throw new ApiError(500, "Avatar is Required");
     }
 
     //create User object
@@ -49,7 +56,7 @@ export const registerUser = asyncHandler(async (req, res) => {
         coverImage: uploadedCoverImage?.url || "",
     };
 
-    const createdUser = await User.create({ userObject });
+    const createdUser = await User.create(userObject);
 
     //check for user Creation
     //remove password and refreshToken form res
