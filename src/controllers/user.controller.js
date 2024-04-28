@@ -90,9 +90,11 @@ export const registerUser = asyncHandler(async (req, res) => {
 
 export const loginUser = asyncHandler(async (req, res) => {
     //Get data form req Body
+
     const { username, email, password } = req.body;
+    console.log(username, email);
     //Validate the data see if its empty  || null  || undefined
-    if (!username || !email) {
+    if (!username && !email) {
         throw new ApiError(400, "username oe email is required");
     }
     if (!password) {
@@ -136,7 +138,7 @@ export const loginUser = asyncHandler(async (req, res) => {
         );
 });
 
-export const logOut = asyncHandler(async (req, res) => {
+export const logOutUser = asyncHandler(async (req, res) => {
     const userId = req?.user._id;
     await User.findByIdAndUpdate(
         userId,
