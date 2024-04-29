@@ -204,3 +204,31 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
         throw new ApiError(500, error?.message || "something went wrong");
     }
 });
+
+export const changeUserCurrentPassword = asyncHandler(async (req, res) => {
+    //take old and new password form req body and also check if password is there
+    const { oldPassword, newPassword } = req.body;
+    if (!oldPassword && !newPassword) {
+        throw new ApiError(400, "all fields are required");
+    }
+    //get User form database
+    const userId = req?.user._id;
+    const user = User.findById(req?.user._id);
+    if (!user) {
+        throw new ApiError(401, "User not Found");
+    }
+    //check if password match  with user provided password
+    const passCheck = await user.passwordCheck(oldPassword);
+    if (!passCheck) {
+        throw new ApiError(400, "Wrong Old Password");
+    }
+    // change the old password with new one
+    user.password = newPassword;
+    await user.save({ validateBeforeSave: false });
+
+    //send the response
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, "Password changed successfully", {}));
+});
