@@ -28,6 +28,6 @@ router.route("/login").post(loginUser);
 
 //secuerd Rouetes
 router.route("/logout").post(verifyJWT, logOutUser);
-router.route("/refresh").get(refreshAccessToken);
+router.route("/refresh-token").get(refreshAccessToken);
 
 export default router;
