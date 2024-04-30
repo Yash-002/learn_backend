@@ -209,7 +209,7 @@ export const changeUserCurrentPassword = asyncHandler(async (req, res) => {
     //take old and new password form req body and also check if password is there
     const { oldPassword, newPassword } = req.body;
     if (!oldPassword && !newPassword) {
-        throw new ApiError(400, "all fields are required");
+        throw new ApiError(400, "All fields are required");
     }
     //get User form database
     const userId = req?.user._id;
